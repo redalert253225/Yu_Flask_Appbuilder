@@ -1,0 +1,264 @@
+# Translations template for PROJECT.
+# Copyright (C) 2018 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2018-10-26 16:39+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: app/forms.py:10
+msgid "MonthSlot"
+msgstr ""
+
+#: app/forms.py:11
+msgid "For example ,January and February : 0102"
+msgstr ""
+
+#: app/forms.py:14
+msgid "BusinessNumber"
+msgstr ""
+
+#: app/forms.py:15
+msgid "Key In Business Number!"
+msgstr ""
+
+#: app/forms.py:18
+msgid "Chose Invoice Field"
+msgstr ""
+
+#: app/forms.py:20
+msgid "only CSV!"
+msgstr ""
+
+#: app/forms.py:26
+msgid "Date"
+msgstr ""
+
+#: app/forms.py:27
+msgid "For example ,2018-01-01"
+msgstr ""
+
+#: app/forms.py:30
+msgid "Fee Rate"
+msgstr ""
+
+#: app/forms.py:31
+msgid "Holiday"
+msgstr ""
+
+#: app/forms.py:31
+msgid "Weekday"
+msgstr ""
+
+#: app/views.py:31 app/views.py:404
+msgid "Add_Invoice_Number"
+msgstr ""
+
+#: app/views.py:67
+#, python-format
+msgid "Fail File!%(name)s check it !"
+msgstr ""
+
+#: app/views.py:82
+#, python-format
+msgid "Can't update to DB! break in line%(line)s , %(number)s"
+msgstr ""
+
+#: app/views.py:109 app/views.py:111
+#, python-format
+msgid "In line %(line)s,InvoiceWord Error!"
+msgstr ""
+
+#: app/views.py:115
+#, python-format
+msgid "In line %(line)s, Business Number Don't Match!"
+msgstr ""
+
+#: app/views.py:117
+#, python-format
+msgid "In line %(line)s, Length of Business Number  error"
+msgstr ""
+
+#: app/views.py:123
+#, python-format
+msgid "In line %(line)s, Invoice Number Repetition!"
+msgstr ""
+
+#: app/views.py:148
+#, python-format
+msgid "In line %(line)s, Number sequential error !"
+msgstr ""
+
+#: app/views.py:150
+#, python-format
+msgid "In line %(line)s , Not a multiple of fifty!"
+msgstr ""
+
+#: app/views.py:152
+#, python-format
+msgid "In line %(line)s, Number does't start from zero !"
+msgstr ""
+
+#: app/views.py:159
+msgid "String is not Number!"
+msgstr ""
+
+#: app/views.py:181
+#, python-format
+msgid "In line %(line)s,Format of data !  for example:107/09~107/10"
+msgstr ""
+
+#: app/views.py:183
+#, python-format
+msgid "In line %(line)s,Month error!"
+msgstr ""
+
+#: app/views.py:187 app/views.py:190
+#, python-format
+msgid "In line %(line)s,Expired!"
+msgstr ""
+
+#: app/views.py:192
+#, python-format
+msgid "In line %(line)s,Month Slot Don't Match!"
+msgstr ""
+
+#: app/views.py:201
+msgid "No found keywords!"
+msgstr ""
+
+#: app/views.py:221
+msgid "There is a problem with the file content format!"
+msgstr ""
+
+#: app/views.py:226
+msgid "monthSlot"
+msgstr ""
+
+#: app/views.py:226 app/views.py:264
+msgid "invoiceNumber"
+msgstr ""
+
+#: app/views.py:226
+msgid "status"
+msgstr ""
+
+#: app/views.py:226
+msgid "insertTime"
+msgstr ""
+
+#: app/views.py:228
+msgid "Search_Invoice_Number"
+msgstr ""
+
+#: app/views.py:262
+msgid "sIdNumber"
+msgstr ""
+
+#: app/views.py:262
+msgid "plateText"
+msgstr ""
+
+#: app/views.py:262
+msgid "inTime"
+msgstr ""
+
+#: app/views.py:262
+msgid "outTime"
+msgstr ""
+
+#: app/views.py:263
+msgid "chungyoNumber"
+msgstr ""
+
+#: app/views.py:263
+msgid "receivable"
+msgstr ""
+
+#: app/views.py:263
+msgid "discount"
+msgstr ""
+
+#: app/views.py:263
+msgid "cash"
+msgstr ""
+
+#: app/views.py:264
+msgid "storeDisType"
+msgstr ""
+
+#: app/views.py:264
+msgid "chungyoDisType"
+msgstr ""
+
+#: app/views.py:264
+msgid "rateType"
+msgstr ""
+
+#: app/views.py:265
+msgid "customerCompanyId"
+msgstr ""
+
+#: app/views.py:265
+msgid "carType"
+msgstr ""
+
+#: app/views.py:269
+msgid "Cash_Journal"
+msgstr ""
+
+#: app/views.py:399
+msgid "day"
+msgstr ""
+
+#: app/views.py:399
+msgid "feeRate"
+msgstr ""
+
+#: app/views.py:405
+msgid "Forms"
+msgstr ""
+
+#: app/views.py:406
+msgid "Invoice_Number"
+msgstr ""
+
+#: app/views.py:407
+msgid "Database"
+msgstr ""
+
+#: app/views.py:408
+msgid "Cash Journal"
+msgstr ""
+
+#: app/views.py:409
+msgid "SpecailDay"
+msgstr ""
+
+#: app/templates/404.html:4
+msgid "Page not found"
+msgstr ""
+
+#: app/templates/YuTsaiLprCashJournal.html:12
+msgid "Tatol Receivable"
+msgstr ""
+
+#: app/templates/YuTsaiLprCashJournal.html:13
+msgid "Tatol Cash"
+msgstr ""
+
+#: app/templates/YuTsaiLprCashJournal.html:14
+msgid "Tatol Discount"
+msgstr ""
+

@@ -1,0 +1,51 @@
+{% extends "appbuilder/base.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="row ">
+<div class="panel panel-primary">
+<div class="panel  panel-heading" >
+  <h4 class="panel-title">
+<p>  {{day}}</p></h4>
+<div class="pull-right">
+  count :{{ dictMoneyCount['countTatol'] }}
+  cash: {{ dictMoneyCount['cashTatol'] }}
+  receivable:{{ dictMoneyCount['receivableTatol'] }}
+  discount:{{ dictMoneyCount['discountTatol'] }}
+  </div>
+
+
+  <p><a href="/yutsailprcashjournalview/downloadExcel/">Excel </a></p>
+
+</div>
+<div class="table-responsive">
+<table class="table table-bordered table-hover table-white">
+    <thead>
+
+    {% for label in labels%}
+                <th><a href='/yutsailprcashjournalview/{{label }}'>{{label}}</th>
+    {% endfor %}
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for value in values %}
+        <tr>
+          {% for label in labels%}
+              {% if label == 'storeDisType' %}
+                <td>{{value.storeDisType()}}</td>
+              {% elif label == 'chungyoDisType'%}
+                <td>{{value.chungyoDisType()}}</td>
+              {% else %}
+                <td>{{value[label]}}</td>
+              {% endif %}
+          {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</div>
+  </div>
+  </div>
+{% endblock %}

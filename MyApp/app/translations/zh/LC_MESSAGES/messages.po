@@ -1,0 +1,264 @@
+# Chinese translations for PROJECT.
+# Copyright (C) 2018 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2018-10-26 16:39+0000\n"
+"PO-Revision-Date: 2018-10-08 19:56+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: app/forms.py:10
+msgid "MonthSlot"
+msgstr "發票期別"
+
+#: app/forms.py:11
+msgid "For example ,January and February : 0102"
+msgstr "一月二月請輸入：0102"
+
+#: app/forms.py:14
+msgid "BusinessNumber"
+msgstr "營業人統編"
+
+#: app/forms.py:15
+msgid "Key In Business Number!"
+msgstr "請輸入營業人統編"
+
+#: app/forms.py:18
+msgid "Chose Invoice Field"
+msgstr "請選擇發票檔案"
+
+#: app/forms.py:20
+msgid "only CSV!"
+msgstr "請選擇csv檔"
+
+#: app/forms.py:26
+msgid "Date"
+msgstr "日期"
+
+#: app/forms.py:27
+msgid "For example ,2018-01-01"
+msgstr "範例:2018-01-01"
+
+#: app/forms.py:30
+msgid "Fee Rate"
+msgstr "費率"
+
+#: app/forms.py:31
+msgid "Holiday"
+msgstr "假日"
+
+#: app/forms.py:31
+msgid "Weekday"
+msgstr "平日"
+
+#: app/views.py:31 app/views.py:404
+msgid "Add_Invoice_Number"
+msgstr "新增發票號碼"
+
+#: app/views.py:67
+#, python-format
+msgid "Fail File!%(name)s check it !"
+msgstr "錯誤的檔案 ！%(name)s 請確認 "
+
+#: app/views.py:82
+#, python-format
+msgid "Can't update to DB! break in line%(line)s , %(number)s"
+msgstr "無法上傳道DB! 在%(line)s 行返回, %(number)s"
+
+#: app/views.py:109 app/views.py:111
+#, python-format
+msgid "In line %(line)s,InvoiceWord Error!"
+msgstr "在第%(line)s行, 發票字軌錯誤"
+
+#: app/views.py:115
+#, python-format
+msgid "In line %(line)s, Business Number Don't Match!"
+msgstr "在第%(line)s行,營業人統編與輸入不符"
+
+#: app/views.py:117
+#, python-format
+msgid "In line %(line)s, Length of Business Number  error"
+msgstr "在第%(line)s行,營業人統編長度錯誤"
+
+#: app/views.py:123
+#, python-format
+msgid "In line %(line)s, Invoice Number Repetition!"
+msgstr "在第%(line)s行,發票號碼發現有重複"
+
+#: app/views.py:148
+#, python-format
+msgid "In line %(line)s, Number sequential error !"
+msgstr "在第%(line)s行,數字順序錯誤"
+
+#: app/views.py:150
+#, python-format
+msgid "In line %(line)s , Not a multiple of fifty!"
+msgstr "在第%(line)s行,非五十的倍數"
+
+#: app/views.py:152
+#, python-format
+msgid "In line %(line)s, Number does't start from zero !"
+msgstr "在第%(line)s行,起始號碼非零"
+
+#: app/views.py:159
+msgid "String is not Number!"
+msgstr "該字串非數字"
+
+#: app/views.py:181
+#, python-format
+msgid "In line %(line)s,Format of data !  for example:107/09~107/10"
+msgstr "在第%(line)s行,日期格式錯誤！範例：107/09~107/10"
+
+#: app/views.py:183
+#, python-format
+msgid "In line %(line)s,Month error!"
+msgstr "第 %(line)s 行,期別錯誤"
+
+#: app/views.py:187 app/views.py:190
+#, python-format
+msgid "In line %(line)s,Expired!"
+msgstr "在第%(line)s行,過期!"
+
+#: app/views.py:192
+#, python-format
+msgid "In line %(line)s,Month Slot Don't Match!"
+msgstr "在第%(line)s行, 期別與輸入不符"
+
+#: app/views.py:201
+msgid "No found keywords!"
+msgstr "沒有找到關鍵字"
+
+#: app/views.py:221
+msgid "There is a problem with the file content format!"
+msgstr "檔案內容格式錯誤"
+
+#: app/views.py:226
+msgid "monthSlot"
+msgstr "期別"
+
+#: app/views.py:226 app/views.py:264
+msgid "invoiceNumber"
+msgstr "發票號碼"
+
+#: app/views.py:226
+msgid "status"
+msgstr "狀態"
+
+#: app/views.py:226
+msgid "insertTime"
+msgstr "寫入時間"
+
+#: app/views.py:228
+msgid "Search_Invoice_Number"
+msgstr "查詢發票號碼"
+
+#: app/views.py:262
+msgid "sIdNumber"
+msgstr "流水號"
+
+#: app/views.py:262
+msgid "plateText"
+msgstr "車牌號碼"
+
+#: app/views.py:262
+msgid "inTime"
+msgstr "進場時間"
+
+#: app/views.py:262
+msgid "outTime"
+msgstr "出場時間"
+
+#: app/views.py:263
+msgid "chungyoNumber"
+msgstr "中友序號"
+
+#: app/views.py:263
+msgid "receivable"
+msgstr "應收金額"
+
+#: app/views.py:263
+msgid "discount"
+msgstr "折扣金額"
+
+#: app/views.py:263
+msgid "cash"
+msgstr "實收金額"
+
+#: app/views.py:264
+msgid "storeDisType"
+msgstr "特約折扣時數"
+
+#: app/views.py:264
+msgid "chungyoDisType"
+msgstr "中友折扣時數"
+
+#: app/views.py:264
+msgid "rateType"
+msgstr "費率"
+
+#: app/views.py:265
+msgid "customerCompanyId"
+msgstr "統一編號"
+
+#: app/views.py:265
+msgid "carType"
+msgstr "車輛類別"
+
+#: app/views.py:269
+msgid "Cash_Journal"
+msgstr "收費明細"
+
+#: app/views.py:399
+msgid "day"
+msgstr "日期"
+
+#: app/views.py:399
+msgid "feeRate"
+msgstr "費率"
+
+#: app/views.py:405
+msgid "Forms"
+msgstr "表單"
+
+#: app/views.py:406
+msgid "Invoice_Number"
+msgstr "發票號碼"
+
+#: app/views.py:407
+msgid "Database"
+msgstr "資料庫"
+
+#: app/views.py:408
+msgid "Cash Journal"
+msgstr "收費明細"
+
+#: app/views.py:409
+msgid "SpecailDay"
+msgstr "特別日"
+
+#: app/templates/404.html:4
+msgid "Page not found"
+msgstr "找不到網頁"
+
+#: app/templates/YuTsaiLprCashJournal.html:12
+msgid "Tatol Receivable"
+msgstr "總應收金額"
+
+#: app/templates/YuTsaiLprCashJournal.html:13
+msgid "Tatol Cash"
+msgstr "總實收金額"
+
+#: app/templates/YuTsaiLprCashJournal.html:14
+msgid "Tatol Discount"
+msgstr "總折扣金額"

@@ -1,0 +1,37 @@
+{% extends "YuCharts.html" %}
+{% import 'appbuilder/general/lib.html' as lib %}
+
+
+
+{% block show_total_value %}
+<div class="well well-sm">
+		<table class="table table-hover ">
+			<thead >
+					<tr>
+						<th> {{_('Day') }}: {{day}}</th>
+					</tr>
+					<tr>
+						<th> {{_('Invoice Number') }}: {{invoiceNumber[0]}}  ~  {{invoiceNumber[1]}} </th>
+					</tr>
+			</thead>
+		<table class="table table-hover ">
+				<thead>
+				<tr>
+					  <th> {{_('Tatol Cars') }}</th>
+						<th> {{_(' Tatol Receivable') }}</th>
+						<th> {{_('Tatol Discount ') }}</th>
+						<th> {{_('Tatol Cash ') }}</th>
+				</tr>
+				</thead>
+				<tbody >
+						<tr>
+							<td> {{carsTatol }}</td>
+							<td> {{receivableTatol}}</td>
+							<td> {{discountTatol}}</td>
+							<td> {{cashTatol}}</td>
+						</tr>
+				</tbody>
+	</table>
+</div>
+
+{% endblock %}
