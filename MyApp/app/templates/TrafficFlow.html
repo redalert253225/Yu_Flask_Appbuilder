@@ -1,0 +1,22 @@
+{% extends "YuCharts.html" %}
+{% import 'appbuilder/general/lib.html' as lib %}
+
+{% block show_total_value %}
+
+<div class="well well-sm">
+		<table class="table table-hover ">
+
+			<tbody >
+					<tr>
+						<tb>
+                  <a href="/trafficflowview/checkChoseChart/IN" class="btn btn-sm btn-primary">
+                  <i class="fa fa-car"></i>  {{_('In Car')}} </a>
+                  <a href="/trafficflowview/checkChoseChart/OUT" class="btn btn-sm btn-primary">
+                  <i class="fa fa-car"></i>  {{_('Out Car')}} </a>
+            </tb>
+					</tr>
+			</tbody>
+         <i class="fa  pull-right">{{_('Tatol Car') }}: {{countCar}}</i>
+</div>
+
+{% endblock %}

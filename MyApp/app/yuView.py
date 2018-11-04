@@ -3,6 +3,8 @@ from flask_appbuilder.charts.widgets import DirectChartWidget
 from flask_appbuilder.models.group import DirectProcessData
 from .widgets import  YuChartsWidgets
 from flask_appbuilder import SimpleFormView
+from flask import (
+    flash, redirect, send_file, jsonify, make_response, url_for, session, abort)
 
 class YuChartsView(SimpleFormView):
     #define your form
@@ -39,18 +41,16 @@ class YuChartsView(SimpleFormView):
 
         if form.validate_on_submit():
             response = self.form_post(form)
-            if not response:
-                return redirect(self.get_redirect())
-            return response
-        else:
-            widgets = self._get_edit_widget(form=form)
-            widgets = self._get_chart_widget( widgets= widgets )
-            return self.render_template(
-                self.form_template,
-                title=self.form_title,
-                widgets=widgets,
-                appbuilder=self.appbuilder
-            )
+            if response:
+                return response
+        widgets = self._get_edit_widget(form=form)
+        widgets = self._get_chart_widget( widgets= widgets )
+        return self.render_template(
+            self.form_template,
+            title=self.form_title,
+            widgets=widgets,
+            appbuilder=self.appbuilder
+        )
 
     def get_group_by_class(self, definition):
         group_by = definition['group']

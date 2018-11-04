@@ -66,3 +66,12 @@ class DayFinancialStatementsSearchForm(DynamicForm):
     day = StringField(_('Date'),
         validators = [DataRequired(),Length(min=10,max=10)],
         widget=DatePickerWidget())
+
+class TrafficFlowForm(DynamicForm):
+    startDay = StringField(_('Start Date'),
+        validators = [DataRequired(),Length(min=10,max=10)],
+        widget=DatePickerWidget())
+
+    endDay = StringField(_('End Date'),
+        validators = [DataRequired(),Length(min=10,max=10)],
+        widget=DatePickerWidget())

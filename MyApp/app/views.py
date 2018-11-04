@@ -7,7 +7,7 @@ from flask_appbuilder.models.mongoengine.interface import MongoEngineInterface
 from flask_babel import lazy_gettext as _
 from flask_appbuilder import AppBuilder, BaseView, expose, has_access
 from datetime import datetime,timedelta
-from .forms import InvoiceNumberForm,SpeicalDayForm,MonthlyCarPlateTextForm,MonthlyCarTimeSlotForm,DayFinancialStatementsSearchForm
+from .forms import InvoiceNumberForm,SpeicalDayForm,MonthlyCarPlateTextForm,MonthlyCarTimeSlotForm,DayFinancialStatementsSearchForm,TrafficFlowForm
 from .models import  InvoiceNumber,YuTsaiLprCashJournal,SpecialDayCollection,MonthlyCarPlateText,MonthlyCarTimeSlot
 from flask_appbuilder.actions import action
 import time
@@ -24,13 +24,6 @@ from .yuView import YuChartsView
 def page_not_found(e):
     return render_template('404.html', base_template=appbuilder.base_template, appbuilder=appbuilder), 404
 
-class TestView(BaseView):
-    default_view = 'test'
-    @expose('/test/?<show0>' )
-    @has_access
-    def test(self ,show0):
-        return self.render_template('test.html', show0 = show0)
-
 class AddInvoiceNumberView(SimpleFormView):
     form =  InvoiceNumberForm
     form_title = _('Add_Invoice_Number')
@@ -46,10 +39,6 @@ class AddInvoiceNumberView(SimpleFormView):
     allowFileName= set(['csv'])
 
     @has_access
-    def form_get(self, form):
-        pass
-
-    @has_access
     def form_post(self, form):
         try:
             self.checkFileName(form.file.data.filename)#確認檔名
@@ -60,68 +49,69 @@ class AddInvoiceNumberView(SimpleFormView):
             self.checkFile( works , invoDict , form.businessNumber.data , form.monthSlot.data )  #檢查內容
             self.upLoadInvoiceNumber( works , invoDict )   #寫入資料庫
         except Exception as e:
-            return redirect(url_for('TestView.test', show0 = str(e) ))
+            flash(str(e))
+            return redirect(url_for('AddInvoiceNumberView.this_form_get'))
         return redirect(url_for('InvoiceNumberView.list'))
 
-    def checkFileName(self ,name):
+    def checkFileName(self ,name): #確認副檔名
         get =name.rfind('.')
         if get > 0 :
             name =name[get+1:]
-            if name  in AddInvoiceNumberView.allowFileName :
+            if name  in self.allowFileName :
                 return
         raise Exception(_('Fail File!%(name)s check it !',name=name))
 
-    def upLoadInvoiceNumber( self , works , invoDict):
+    def upLoadInvoiceNumber( self , works , invoDict): #將發票號碼寫入資料庫
         for i in range( len(works)-1 ):  #第0不動作
-            number = works[i+1][invoDict[ AddInvoiceNumberView.invoTuple[3] ]]
+            number = works[i+1][invoDict[ self.invoTuple[3] ]]
             nowTime = self.getTime()
             while True:
                 john = InvoiceNumber(
-                     monthSlot =  works[i+1][invoDict[ AddInvoiceNumberView.invoTuple[1] ]] ,
-                     invoiceNumber  = works[i+1][invoDict[ AddInvoiceNumberView.invoTuple[2] ]]  + number,
+                     monthSlot =  works[i+1][invoDict[ self.invoTuple[1] ]] ,
+                     invoiceNumber  = works[i+1][invoDict[ self.invoTuple[2] ]]  + number,
                      status =  '0',
                      insertTime = nowTime)
                 try:
                     john.save()
                 except :
-                    raise Exception(_('Can\'t update to DB! break in line%(line)s , %(number)s',lin=i,number=works[i+1][invoDict[ AddInvoiceNumberView.invoTuple[2] ]]  + number))
-                if number == works[i+1][invoDict[ AddInvoiceNumberView.invoTuple[4] ]]:
+                    raise Exception(_('Can\'t update to DB! break in line%(line)s , %(number)s',lin=i,number=works[i+1][invoDict[ self.invoTuple[2] ]]  + number))
+                if number == works[i+1][invoDict[ self.invoTuple[4] ]]:
                     break
                 number = self.strAdd( number)
 
-    def getTime(self):
+    def getTime(self):# 調整時間格式 與資料庫一致
         insertTime =  datetime.utcnow()
         insertTime = insertTime.isoformat()
         insertTime = insertTime[:-3]+'Z'
         return insertTime
 
-    def checkFile(self , works , invoDict ,businessNumber, monthSlot ):
+    def checkFile(self , works , invoDict ,businessNumber, monthSlot ):#確認檔案內容格式
         for i in range( len(works)-1 ):  #第0不檢查
-            self.checkBusinessNumber( works[i+1][ invoDict[ AddInvoiceNumberView.invoTuple[0] ]], businessNumber ,i+1) #確認營業人統編
-            works[i+1][invoDict[AddInvoiceNumberView.invoTuple[1] ]]=self.checkMonthSlot(monthSlot ,works[i+1][invoDict[AddInvoiceNumberView.invoTuple[1] ] ],i+1  ) #調整期別格式,確認期別
-            self.checkInvoiceWord( works[i+1][invoDict[AddInvoiceNumberView.invoTuple[2] ] ] , i+1) #確認字軌
+            self.checkBusinessNumber( works[i+1][ invoDict[ self.invoTuple[0] ]], businessNumber ,i+1) #確認營業人統編
+            works[i+1][invoDict[self.invoTuple[1] ]]=self.checkMonthSlot(monthSlot ,works[i+1][invoDict[self.invoTuple[1] ] ],i+1  ) #調整期別格式,確認期別
+            self.checkInvoiceWord( works[i+1][invoDict[self.invoTuple[2] ] ] , i+1) #確認字軌
             self.checkNumber(  #確認數字
-                works[i+1][ invoDict[ AddInvoiceNumberView.invoTuple[3] ]],
-                works[i+1][ invoDict[ AddInvoiceNumberView.invoTuple[4] ]], i+1 )
+                works[i+1][ invoDict[ self.invoTuple[3] ]],
+                works[i+1][ invoDict[ self.invoTuple[4] ]], i+1 )
             self.checkRepeat( #確認重複
-                works[i+1][ invoDict[ AddInvoiceNumberView.invoTuple[2] ]],
-                works[i+1][ invoDict[ AddInvoiceNumberView.invoTuple[3] ]],
-                works[i+1][ invoDict[ AddInvoiceNumberView.invoTuple[4] ]], i+1)
+                works[i+1][ invoDict[ self.invoTuple[2] ]],
+                works[i+1][ invoDict[ self.invoTuple[3] ]],
+                works[i+1][ invoDict[ self.invoTuple[4] ]], i+1)
 
-    def checkInvoiceWord(self , InvoiceWord , line ):
+    def checkInvoiceWord(self , InvoiceWord , line ): #確認發票號碼字母 是否大寫,長度
         for i in InvoiceWord:
             if i<'A' or i>'Z':
                 raise Exception(_('In line %(line)s,InvoiceWord Error!',line = line ))
-        if len(InvoiceWord) != AddInvoiceNumberView.leInvoiceWord :
+        if len(InvoiceWord) != self.leInvoiceWord :
                 raise Exception(_('In line %(line)s,InvoiceWord Error!',line = line ))
 
-    def checkBusinessNumber(self, number ,businessNumber ,line):
+    def checkBusinessNumber(self, number ,businessNumber ,line):#確認營業人統編是否與輸入一致
         if number  != businessNumber:
             raise Exception(_('In line %(line)s, Business Number Don\'t Match!', line = line))
-        if len(number) != AddInvoiceNumberView.leBusinessNumber:
+        if len(number) != self.leBusinessNumber:
             raise Exception(_('In line %(line)s, Length of Business Number  error', line = line ))
 
-    def checkRepeat(self , header , startNumber , endNumber , line):
+    def checkRepeat(self , header , startNumber , endNumber , line):#資料庫搜尋 確認有無重複
         number = startNumber
         while True:
             if InvoiceNumber.objects( invoiceNumber = header+number ).first() != None:
@@ -130,8 +120,8 @@ class AddInvoiceNumberView(SimpleFormView):
                 break
             number = self.strAdd( number )
 
-    def strAdd( self ,number ): #after strTOint  not check char not 1-9
-        num = len( number )
+    def strAdd( self ,number ): #字串加一
+        num = len( number ) #after strTOint  not check char not 1-9
         for i in range( len( number) ):
             now = num - i -1
             if number[now] != '9' :
@@ -144,8 +134,8 @@ class AddInvoiceNumberView(SimpleFormView):
             number += '0'
         return number
 
-    def checkNumber( self , startNumber , endNumber , line):
-        if  len(startNumber ) != AddInvoiceNumberView.leInvonumber or len(endNumber ) != AddInvoiceNumberView.leInvonumber :
+    def checkNumber( self , startNumber , endNumber , line):#確認發票號碼數字 ,長度
+        if  len(startNumber ) != self.leInvonumber or len(endNumber ) != self.leInvonumber :
             raise Exception('In line {}, Length of Invonumber Number  error !'.format( line ))
         start = self.strTOint( startNumber )
         end = self.strTOint( endNumber )
@@ -200,13 +190,13 @@ class AddInvoiceNumberView(SimpleFormView):
     def checkKey(self, works):#檢查關鍵字
         invoDict={}
         try :
-            for i in range(len(AddInvoiceNumberView.invoTuple)):
-                invoDict[AddInvoiceNumberView.invoTuple[i]]=works[0].index(AddInvoiceNumberView.invoTuple[i])
+            for i in range(len(self.invoTuple)):
+                invoDict[self.invoTuple[i]]=works[0].index(self.invoTuple[i])
         except :
             raise Exception(_('No found keywords!'))
         return invoDict
 
-    def cutStr(self, word):
+    def cutStr(self, word):#將資料分段
         editWord=[]
         part=""
         jump=0
@@ -249,7 +239,7 @@ class InvoiceNumberView(ModelView):
         #time.sleep(1)#一秒只能刪一次避免時間一樣
         return redirect(self.get_redirect())
 
-    def changeDel(self , item ,myTime ,count ):
+    def changeDel(self , item ,myTime ,count ): #發票號碼更改為('MM'+'DD' + char(時) + char(分) + char(秒) + count(3位數)
         item.status='2'
         item.invoiceNumber = myTime.strftime("%m%d") + chr(myTime.hour +48) + chr(myTime.minute+48) + chr(myTime.second+48) +str( count  ).zfill(3)
         return item
@@ -287,8 +277,10 @@ class YuTsaiLprCashJournalView(ModelView):
                                     title=self.list_title,
                                     widgets=widgets)
 
-    def getMoney(self):
+    def getMoney(self): #統計金額
         self.extra_args['cashTatol'] = 0
+        self.extra_args['receivableTatol'] = 0
+        self.extra_args['discountTatol'] = 0
         for item in  self.nowListData :
             if item['cash'] != "":
                  self.extra_args['cashTatol'] +=  int(item['cash'])
@@ -346,11 +338,11 @@ class YuTsaiLprCashJournalView(ModelView):
                     sheet1.write(line, 17,  '0000000000' ,myStyle)
                 line +=1
         myExcel.save("app/"+'test.xls')
-        response = make_response(send_file("test.xls"))
+        response = make_response(send_file("CashJournal.xls"))
         response.headers["Content-Disposition"] = "attachment; filename=test.xls;"
         return response
 
-    def checkMonth(self,month):
+    def checkMonth(self,month): #確認是哪個期別(年+月)
         invoiceMonth = []
         if int(month[-1]) % 2 != 0 :
             invoiceMonth.append(month)
@@ -360,13 +352,13 @@ class YuTsaiLprCashJournalView(ModelView):
             invoiceMonth.append(month)
         return invoiceMonth
 
-    def monthAdd(self , month , i):
+    def monthAdd(self , month , i):#期別(年+月)加減(對月份加減)
         number = int(month[4:])+ i
         if number < 10:
             return month[:4]+'0'+str(number)
         return month[:4]+str(number)
 
-    def countTax(self , cash):
+    def countTax(self , cash):#計算稅額
         cash = int(cash)
         dictMoney={}
         dictMoney['priceOfGoods'] = self.myRound( cash/1.05)
@@ -374,12 +366,12 @@ class YuTsaiLprCashJournalView(ModelView):
         dictMoney['cash']= cash
         return dictMoney
 
-    def myRound(self , number):
+    def myRound(self , number):#四捨五入到小數第二位
         if (number *1000 %10) >= 5 :
             return round((number*1000+10)/1000,2)
         return round(number,2)
 
-    def getNumber(self , str):
+    def getNumber(self , str):# 取出字串裡的數字  如果非數字會剔除
         number =''
         for i in str:
             if i >= '0' and i <= '9':
@@ -531,40 +523,34 @@ class DayFinancialStatementsView(YuChartsView):
         'series': ['receivableTatol','discountTatol','cashTatol']
     }]
 
+    def updateData(self):
+        self.statistics(self.extra_args['day'])
+        self.charData=[]
+        self.charData.append([ #順序要等於definitions['series']
+            self.extra_args['day'] ,
+            self.extra_args['receivableTatol'],
+            self.extra_args['discountTatol'],
+            self.extra_args['cashTatol']
+        ])
+
     def form_get(self, form):
         if self.extra_args['day'] == '0':
             today = datetime.utcnow().date()
-            self.extra_args['day'] = today+timedelta(days = -1)
-            endTime = today.strftime("%Y-%m-%d")+'T09:00:00'
-            startTime = self.extra_args['day'].strftime("%Y-%m-%d")+'T09:00:00'
-            self.statistics( startTime, endTime )
-            self.charData=[]
-            self.charData.append([ #順序要等於definitions['series']
-                self.extra_args['day'] ,
-                self.extra_args['receivableTatol'],
-                self.extra_args['discountTatol'],
-                self.extra_args['cashTatol']
-            ])
+            self.extra_args['day'] = (today+timedelta(days = -1)).strftime("%Y-%m-%d")
+        self.updateData()
 
     def form_post(self, form):
         if len(form.data['day']) == 10:
-            self.searchDateTime(form.data['day'])
-            self.charData=[]
-            self.charData.append([
-                self.extra_args['day'] ,
-                self.extra_args['receivableTatol'],
-                self.extra_args['discountTatol'],
-                self.extra_args['cashTatol']
-            ])
-        return redirect(url_for('DayFinancialStatementsView.this_form_get'))
+            self.extra_args['day'] = form.data['day']
+        self.updateData()
 
     def searchDateTime(self , day):
-        self.extra_args['day'] = day
         endTime =  (datetime.strptime(day, '%Y-%m-%d')+timedelta(days = 1)).strftime("%Y-%m-%d")+'T09:00:00'
         startTime = day+'T09:00:00'
-        self.statistics( startTime, endTime )
+        return startTime, endTime
 
-    def statistics(self , startTime, endTime):
+    def statistics(self , day):
+        startTime ,endTime = self.searchDateTime( day)
         self.extra_args['cashTatol'] = 0
         self.extra_args['receivableTatol'] = 0
         self.extra_args['discountTatol'] = 0
@@ -590,59 +576,85 @@ class DayFinancialStatementsView(YuChartsView):
                 self.extra_args['discountTatol'] += int(item['discount'])
 
 class TrafficFlowView(YuChartsView):
-    form = DayFinancialStatementsSearchForm
+    form = TrafficFlowForm
     form_title = _('Traffic Flow')
-    form_template  = 'YuCharts.html'
-    label_columns ={'hour':'hour','cars': 'cars'}
-    definitions = [
-    {
+    form_template  = 'TrafficFlow.html'
+    extra_args = {'countCar': 0 }
+    label_columns ={'hour':'hour','cars': 'In Car'}
+    definitions = [{
         'label': 'Day',
         'group': 'hour',
         'series': ['cars']
     }]
-    tatolCar = []
+    inTatolCar = [
+        ['00:00',0],['01:00',0],['02:00',0],['03:00',0],['04:00',0],['05:00',0],
+        ['06:00',0],['07:00',0],['08:00',0],['09:00',0],['10:00',0],['11:00',0],
+        ['12:00',0],['13:00',0],['14:00',0],['15:00',0],['16:00',0],['17:00',0],
+        ['18:00',0],['19:00',0],['20:00',0],['21:00',0],['22:00',0],['23:00',0]
+    ]
+    outTatolCar = [
+        ['00:00',0],['01:00',0],['02:00',0],['03:00',0],['04:00',0],['05:00',0],
+        ['06:00',0],['07:00',0],['08:00',0],['09:00',0],['10:00',0],['11:00',0],
+        ['12:00',0],['13:00',0],['14:00',0],['15:00',0],['16:00',0],['17:00',0],
+        ['18:00',0],['19:00',0],['20:00',0],['21:00',0],['22:00',0],['23:00',0]
+    ]
+    choseChart = 'IN'
     chart_title = 'Traffic Flow'
+    startDay = ''
+    endDay = ''
+
+    def updateData(self):
+        self.initTatolCar()
+        self.statistics()
+        if self.choseChart == 'IN':
+            self.charData=self.inTatolCar
+            self.label_columns['cars'] = 'In Car'
+        elif self.choseChart == 'OUT':
+            self.charData=self.outTatolCar
+            self.label_columns['cars'] = 'Out Car'
+        self.chart_title = self.startDay+'  ~  '+self.endDay
 
     def form_get(self, form):
-        if self.tatolCar == []:
-            self.initTatolCar()
+        if self.startDay == '':
             today = datetime.utcnow().date()
-            day = today+timedelta(days = -1)
-            endTime = day.strftime("%Y-%m-%d")+'T23:59:59'
-            startTime = day.strftime("%Y-%m-%d")+'T00:00:00'
-            self.statistics( startTime, endTime )
-            self.charData=self.tatolCar
-            self.chart_title = day
+            day = (today+timedelta(days = -1)).strftime("%Y-%m-%d")
+            self.startDay = day
+            self.endDay = day
+        self.updateData()
 
-    def initTatolCar(self):
-        self.tatolCar = []
-        for i in range(24):
-            self.tatolCar.append([self.getInitHour(i),0])
-
-    def getInitHour(self, i):
-        return str(i).zfill(2)+':00'
-
-    def form_post(self, form):
-        if len(form.data['day']) == 10:
-            self.initTatolCar()
-            self.searchDateTime(form.data['day'])
-            self.charData=self.tatolCar
-            self.chart_title = form.data['day']
+    @expose('/checkChoseChart/<chose>' )
+    def checkChoseChart(self ,chose):
+        if chose ==  'IN':
+            self.choseChart = 'IN'
+        elif chose == 'OUT':
+            self.choseChart = 'OUT'
         return redirect(url_for('TrafficFlowView.this_form_get'))
 
-    def searchDateTime(self , day):
-        endTime =  day+'T23:59:59'
-        startTime = day+'T00:00:00'
-        self.statistics( startTime, endTime )
+    def initTatolCar(self):
+        self.extra_args['countCar'] =  0
+        for i in range(24) :
+            self.inTatolCar[i][1]=0
+            self.outTatolCar[i][1]=0
 
-    def statistics(self , startTime, endTime):
+    def form_post(self, form):
+        if len(form.data['startDay']) == 10 and  len(form.data['endDay']) == 10 and form.data['startDay'] <= form.data['endDay']:
+            self.startDay = form.data['startDay']
+            self.endDay = form.data['endDay']
+        self.updateData()
+
+    def statistics(self ):
+        endTime =  self.endDay +'T23:59:59'
+        startTime = self.startDay +'T00:00:00'
         data = YuTsaiLprCashJournal.objects( Q(outTime__lte = endTime) & Q(outTime__gt = startTime) ).all()
         if data :
             for item in data :
-                try:
-                    self.tatolCar[ int(item.outTime[11:13]) ][1]+=1
+                self.extra_args['countCar'] += 1
+                try:# 排除 沒有值的狀況
+                    self.inTatolCar[ int(item.inTime[11:13]) ][1]+=1
+                    self.outTatolCar[ int(item.outTime[11:13]) ][1]+=1
                 except:
                     continue
+
 '''
 class tryDirectByChartView(DirectByChartView):
     datamodel = MongoEngineInterface(YuTsaiLprCashJournal)
@@ -704,13 +716,18 @@ class tryDirectByChartView(DirectByChartView):
             else:
                 base.append(item)
         return base
+
+class TestView(BaseView):
+    default_view = 'test'
+    @expose('/test/?<show0>' )
+    @has_access
+    def test(self ,show0):
+        return self.render_template('test.html', show0 = show0)
 '''
-appbuilder.add_view_no_menu(TestView)
+#appbuilder.add_view_no_menu(TestView)
 appbuilder.add_view_no_menu(AddMonthlyCarTimeSlotView)
-appbuilder.add_view(AddInvoiceNumberView, "Add Invoice Number", icon="fa-hand-o-up", label=_("Add_Invoice_Number"),
-        category="MyForms", category_icon="fa-cloud-upload",category_label=_("Forms"))
-appbuilder.add_view(InvoiceNumberView, "Invoice Number", icon="fa-th-list", label=_("Invoice_Number"),
-        category="MyDataBase", category_icon="fa-database",category_label=_("Database"))
+appbuilder.add_view(AddInvoiceNumberView, "Add Invoice Number", icon="fa-hand-o-up", label=_("Add_Invoice_Number"),category="MyForms", category_icon="fa-cloud-upload",category_label=_("Forms"))
+appbuilder.add_view(InvoiceNumberView, "Invoice Number", icon="fa-th-list", label=_("Invoice_Number"), category="MyDataBase", category_icon="fa-database",category_label=_("Database"))
 appbuilder.add_view(YuTsaiLprCashJournalView, "Yu Tsai Lpr Cash Journal", icon="fa-th-list", label=_("Cash Journal"),category="MyDataBase")
 appbuilder.add_view(SpecailDayView, "Specail Day", icon="fa-th-list", label=_("SpecailDay"),category="MyDataBase")
 appbuilder.add_view(MonthlyCarPlateTextView, "Monthly Car Plate Text ", icon="fa-th-list", label=_("Monthly Car"),category="MyDataBase")
@@ -718,4 +735,4 @@ appbuilder.add_view(MonthlyCarTimeSlotView, "Monthly Car Time Slot", icon="fa-th
 appbuilder.add_view(DayFinancialStatementsView, "Day Financial Statements", icon="fa-th-list", label=_("Day Financial Statements"),category="MyDataBase")
 appbuilder.add_view(TrafficFlowView, "Traffic Flow", icon="fa-th-list", label=_("Traffic Flow"),category="MyDataBase")
 #appbuilder.add_view(tryDirectByChartView, "try  Direct  By  Chart", icon="fa-th-list", label=_(" Direct  By  Chart"),category="MyDataBase")
-appbuilder.security_cleanup() #清除之前的列表名稱
+appbuilder.security_cleanup() #清除被廢棄的列表名稱
